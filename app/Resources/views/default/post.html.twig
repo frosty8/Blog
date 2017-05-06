@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<h1>WSZYSTKIE WPISY</h1>
+	<hr>
+	{% for post in posts %}
+		<div>
+			<h2><a href={{ path('article', {id:post.id}) }}>{{ post.title }}</a></h2>
+			<p>{{ post.heading }}</p>
+		</div>
+	{% endfor %}
+
+	<hr>
+	<a href={{ path('homepage') }}>Strona Główna</a>
+{% endblock %}
