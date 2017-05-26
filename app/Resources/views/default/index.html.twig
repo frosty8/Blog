@@ -1,15 +1,20 @@
 {% extends 'base.html.twig' %}
 {% block title %}Strona główna{% endblock %}
 
+
 {% block body %}
+	<h1 style="text-align:center;">Najnowsze posty</h1>
+	<hr>
+	{% for newest in news %}
+		<ul class="list-group">			
+			<li class="list-group-item">
+				<a href="{{ path('article', {id:newest.id}) }}">
+					{{ newest.title }}<br><br>
+				</a>
+				<b>{{ newest.heading }}</b>
+			</li>
+		</ul>
+	{% endfor %}
 
-    <h1>Blog - PROJECT XV</h1>
-    <hr/>
-    {% block navigation %}
-<p>{{ 'Symfony is great' | trans }}</p>
-            <div class=""><a href="{{ path('fos_user_registration_register') }}"><h4>Zarejestruj się</h4></a></div>
-
-        {% endblock %}
-
-    <a href={{ path('post') }}><h3>Posty</h3></a>
 {% endblock %}
+

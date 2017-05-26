@@ -1,0 +1,12 @@
+{% extends "@FOSUser/layout.html.twig" %}
+
+{% block fos_user_content %}
+	<h1>Twoje konto</h1>
+	<hr>
+	<h3>Dane:</h3>
+	{% include "@FOSUser/Profile/show_content.html.twig" %}
+	<a href="{{ path('fos_user_profile_edit') }}">Zmień dane</a>
+	<hr>
+	<a href="{{ path('fos_user_change_password') }}">Zmiana hasła</a>
+	<hr>
+{% endblock fos_user_content %}

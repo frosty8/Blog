@@ -1,0 +1,9 @@
+{% extends 'mailbox/mailbox.html.twig' %}
+
+
+{% block mailboxContent %}
+<h2 style="text-align: center;">Wyślij wiadomość</h2>
+    {{ form_start(form) }}
+		{{ form_widget(form) }}
+	{{ form_end(form) }}
+{% endblock %}

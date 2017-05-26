@@ -81,12 +81,26 @@ fos_user:
     firewall_name: main
     user_class: AppBundle\Entity\User
     from_email:
-        address: "noreply@yourcompany.com"
-        sender_name: "No Reply"
+        address: "noreply@Blog.com"
+        sender_name: "Blog - obsługa użytkownika"
+    registration:
+        confirmation:
+            enabled: true
+    resetting:
+        email:
+            from_email:
+                address: resetmy@example.com
+                sender_name: demoReset
+
 
 # EasyAdminBunle
 easy_admin:
     entities:
-        - AppBundle\Entity\Post
-        - AppBundle\Entity\Comment
+        Post:
+            class: AppBundle\Entity\Post
+        Comment:
+            class: AppBundle\Entity\Comment
+    site_name: 'Panel administracyjny'
+    design:
+        brand_color: 'rgba(80, 50, 50, 0.85)'
 

@@ -1,0 +1,54 @@
+{% extends 'mailbox/mailbox.html.twig' %}
+
+{% block mailboxContent %}
+<h2 style="text-align: center;">
+	{% if showRecieved is defined %}Odebrane{% else %}Wysłane{% endif %}
+</h2>
+
+{% if messages is empty %}
+	<h4>Brak wiadomości</h4>
+{% else %}
+
+	<table class="table table-bordered">
+	    <thead>
+	      <tr>
+	        <th>{% if showRecieved is defined %}Od{% else %}Do{% endif %}</th>
+	        <th>Temat</th>
+	        <th>Data</th>
+	        <th>Akcja</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+			{% for message in messages %}
+
+		      <tr>
+		        <td>
+		        	{% if showRecieved is defined %}
+		        		{{ message.fromUser }}
+		        		{% else %}
+		        		{{ message.toUser }}
+		        	{% endif %}
+		        </td>
+		        <td>
+		        	<b>
+			        	<a href="{{ path('mail_message_show', {messageToShow:message.id}) }}" >
+			        		{{ message.topic }}
+			        	</a>
+		        	</b>
+		        </td>
+		        <td>
+		        	{{ message.dateSend|date('Y-m-d H:i:s') }}
+		        </td>
+		        <td>
+		        	<a href="{{ path('mail_message_delete', {message:message.id}) }}" class="btn btn-danger">	Usuń
+		        	</a>
+		        </td>
+		      </tr>
+
+			{% endfor %}
+	    </tbody>
+	  </table>
+
+{% endif %}
+
+{% endblock %}

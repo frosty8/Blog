@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<h1>WSZYSTKIE WPISY</h1>
+	<h1 style="text-align:center;">Posty</h1>
 	<hr>
 	{% for post in posts %}
 		<div>
@@ -11,5 +11,5 @@
 	{% endfor %}
 
 	<hr>
-	<a href={{ path('homepage') }}>Strona Główna</a>
+	<a href={{ path('homepage') }} class="btn btn-success btn-block"><b>Strona Główna</b></a>
 {% endblock %}

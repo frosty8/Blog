@@ -5,11 +5,13 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Post as Post;
 use AppBundle\Entity\Comment as Comment;
 use AppBundle\Form\CommentType as CommentType;
+use AppBundle\Form\PostType as PostType;
 
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\DateTime as DateTime;
 
 class DefaultController extends Controller
 {
@@ -18,21 +20,31 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request){
 
+
         $request->setLocale('pl');
-        
-        return $this->render('default/index.html.twig', []);
+        $em = $this->getDoctrine()->getRepository('AppBundle:Post');
+
+        $news = $em->createQueryBuilder('n')
+        ->orderBy('n.createdAt', 'DESC')
+        ->getQuery()
+        ->setMaxResults(5)
+        ->getResult();
+
+        return $this->render('default/index.html.twig', [
+            'news' => $news
+            ]);
     }
 
     /**
     * @Route("/post", name="post")
     */
-    public function postsAction(){
+    public function showpostsAction(){
 
         $manager = $this->getDoctrine()->getManager();
         $posts = $manager->createQueryBuilder()
         ->from('AppBundle:Post', 'p')
         ->select('p')
-        ->setMaxResults(5)
+        ->setMaxResults(20)
         ->getQuery()
         ->getResult();
     
@@ -44,13 +56,13 @@ class DefaultController extends Controller
     /**
     * @Route("post/article/{id}", name="article")
     */
-    public function showPostAction(Post $article, Request $request)
+    public function showArticleAction(Post $article, Request $request)
     {
         // Przechwycenie danych (z formularza) - request jest za to odpowiedzialny
 
         $form = null;
 
-///////////////////////////////////// DLA ZALOGOWANYCH UŻYTKOWNIKÓW ///////////////////////////////////////////////
+////////////////////////////////////// DLA ZALOGOWANYCH UŻYTKOWNIKÓW ////////////////////////////////////
 
         if ($user = $this->getUser()) {
             
@@ -67,9 +79,9 @@ class DefaultController extends Controller
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($comment);
                 $em->flush();
-            //Persist - na potrzeby doctrine, a flush - do bazy danych
+            //Persist - tylko na potrzeby doctrine, a flush - do bazy danych
 
-                $this->addFlash('success', 'Dodano komentarz');
+                $this->addFlash('notice', 'Dodano komentarz');
                 return $this->redirectToRoute('article', array('id' => $article->getID()));
             }
         }
@@ -79,5 +91,34 @@ class DefaultController extends Controller
             'form'=> is_null($form) ? $form : $form->createView()
             ]);
     }
+
+    /**
+    * @Route("/post-new", name="new_article")
+    *
+    */
+    public function newPostAction(Request $request)
+    {
+        $form = null;
+        $newPost = new Post();
+        $form = $this->createForm(PostType::class, $newPost);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($newPost);
+            $em->flush();
+
+            $this->addFlash('notice', 'Wstawiono nowy post');
+            return $this->redirectToRoute('homepage');
+        }
+
+        return $this->render('default/insert_article.html.twig', [
+            'form' => is_null($form) ? $form : $form->createView()
+
+            ]);
+    }
+
 
 }

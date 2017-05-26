@@ -6,27 +6,23 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class CommentType extends AbstractType
+class MessageType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //Modyfikacja atrybutów formularza
         $builder
-        ->add('content', TextareaType::class, array (
-            'label' => false,
-             'attr' => array('placeholder' => 'Treść komentarza')
-                )
-            )
-        ->add('Wyślij', SubmitType::class, array(
-            'attr' => array('class' => 'btn btn btn-success') 
-                )
-            )
+        ->add('toUser', TextType::class, ['label' => 'Do:'])
+        ->add('topic', TextType::class, ['label' => 'Temat:'])
+        ->add('body', TextareaType::class, ['label' => 'Wiadomość:', 'attr' => ['rows' => 12]])
+        ->add('Wyślij', SubmitType::class, ['attr' => ['class' => 'btn btn-primary']])
+
         ;
     }
     
@@ -36,7 +32,7 @@ class CommentType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Comment'
+            'data_class' => 'AppBundle\Entity\Message'
         ));
     }
 
@@ -45,7 +41,7 @@ class CommentType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_comment';
+        return 'appbundle_message';
     }
 
 

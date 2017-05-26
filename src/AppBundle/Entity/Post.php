@@ -2,6 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use Symfony\Component\Validator\Constraints\DateTime as DateTime;
+
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -173,6 +176,7 @@ class Post
     public function __construct()
     {
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->createdAt = new \Datetime("now");
     }
 
     /**

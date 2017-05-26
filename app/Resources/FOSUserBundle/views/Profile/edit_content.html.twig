@@ -1,0 +1,11 @@
+{% trans_default_domain 'FOSUserBundle' %}
+	<h1>Twoje konto</h1>
+
+	Możesz tutaj zmienić swoje dane. Nie zapomnij podać hasła w celu potwierdzenia zmian.
+	<hr>
+{{ form_start(form, { 'action': path('fos_user_profile_edit'), 'attr': { 'class': 'fos_user_profile_edit' } }) }}
+    {{ form_widget(form) }}
+    <div>
+        <input type="submit" value="{{ 'profile.edit.submit'|trans }}" />
+    </div>
+{{ form_end(form) }}

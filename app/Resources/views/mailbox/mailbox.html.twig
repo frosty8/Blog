@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="wrapper">
+
+        <div class="sidebar-wrapper">
+            <ul class="">
+                <li class="">
+                    <h4><a href="{{ path('mailbox') }}">Nowa wiadomość</a></h4>
+                </li>            
+                <li class="">
+                    <h4><a href="{{ path('mail_recieved') }}">Odebrane</a></h4>
+                </li>
+                <li>
+                    <h4><a href="{{ path('mail_sent') }}">Wysłane</a></h4>
+                </li>
+            </ul>
+        </div>
+        <div class="content">
+
+        	{% block mailboxContent %}
+        	{% endblock %}
+
+			
+        </div>
+
+</div>
+<div style="clear:both;"><div>
+
+{% endblock %}

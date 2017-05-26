@@ -18,6 +18,8 @@ class User extends BaseUser
         parent::__construct();
 
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->messagesSent = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->messagesRecieved = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -34,12 +36,25 @@ class User extends BaseUser
     */
     private $comments;
 
+    /**
+    * @var
+    *
+    * @ORM\OneToMany(targetEntity="Message", mappedBy="fromUser")
+    */
+    private $messagesSent;
+
+    /**
+    * @var
+    * 
+    * @ORM\OneToMany(targetEntity="Message", mappedBy="toUser")
+    */
+    private $messagesRecieved;
+
+    
     public function getId()
     {
         return $this->id;
     }
-
-
     /**
      * Add comment
      *
@@ -72,5 +87,73 @@ class User extends BaseUser
     public function getComments()
     {
         return $this->comments;
+    }
+
+    /**
+     * Add messagesSent
+     *
+     * @param \AppBundle\Entity\Message $messagesSent
+     *
+     * @return User
+     */
+    public function addMessagesSent(\AppBundle\Entity\Message $messagesSent)
+    {
+        $this->messagesSent[] = $messagesSent;
+
+        return $this;
+    }
+
+    /**
+     * Remove messagesSent
+     *
+     * @param \AppBundle\Entity\Message $messagesSent
+     */
+    public function removeMessagesSent(\AppBundle\Entity\Message $messagesSent)
+    {
+        $this->messagesSent->removeElement($messagesSent);
+    }
+
+    /**
+     * Get messagesSent
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMessagesSent()
+    {
+        return $this->messagesSent;
+    }
+
+    /**
+     * Add messagesRecieved
+     *
+     * @param \AppBundle\Entity\Message $messagesRecieved
+     *
+     * @return User
+     */
+    public function addMessagesRecieved(\AppBundle\Entity\Message $messagesRecieved)
+    {
+        $this->messagesRecieved[] = $messagesRecieved;
+
+        return $this;
+    }
+
+    /**
+     * Remove messagesRecieved
+     *
+     * @param \AppBundle\Entity\Message $messagesRecieved
+     */
+    public function removeMessagesRecieved(\AppBundle\Entity\Message $messagesRecieved)
+    {
+        $this->messagesRecieved->removeElement($messagesRecieved);
+    }
+
+    /**
+     * Get messagesRecieved
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMessagesRecieved()
+    {
+        return $this->messagesRecieved;
     }
 }
