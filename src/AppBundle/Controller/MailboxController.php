@@ -18,7 +18,7 @@ class MailboxController extends Controller
 	*
 	* @Route("/skrzynka", name="mailbox")
 	*/
-	public function openMailboxAction(Request $request)
+	public function newMessageAction(Request $request)
 	{
 		
     	$form = null;
@@ -26,7 +26,7 @@ class MailboxController extends Controller
 
     	$form = $this->createForm(MessageType::class, $message);
 
-////////////////////////////// Wiadomość w serwisie - do bazy danych ////////////////////////////////////
+///////////////////////////// Wiadomość w aplikacji - do bazy danych ///////////////////////////////////
     	$form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -51,7 +51,7 @@ class MailboxController extends Controller
 
 	        else{
 	        	//throw new Exception("Error Processing Request", 1);   //////// ZROBIĆ PORZĄDNIE ///////
-	        	$this->addFlash('notice', 'Nie znaleziono użytkownika');
+	        	$this->addFlash('warning', 'Nie znaleziono użytkownika');
 	        }
         }
 
@@ -64,13 +64,22 @@ class MailboxController extends Controller
 	*
 	* @Route("/skrzynka/odebrane", name="mail_recieved")
 	*/
-	public function showRecievedMessagesAction()
+	public function showRecievedMessagesAction(Request $request)
 	{
-		$repo = $this->getDoctrine()->getRepository('AppBundle:Message');
-		$recievedMessages = $repo->findByToUser($this->getUser());
+		$dql = "SELECT message FROM AppBundle:Message message WHERE message.toUser=".$this->getUser()->getId();
+
+		$em = $this->getDoctrine()->getManager();
+		$query = $em->createQuery($dql);
+
+		$paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            5
+        );
 
 		return $this->render('mailbox/mailboxMessages.html.twig', [
-			'messages' => $recievedMessages,
+			'messages' => $pagination,
 			'showRecieved' => true
 
 			]);
@@ -80,13 +89,23 @@ class MailboxController extends Controller
 	*
 	* @Route("skrzynka/wyslane", name="mail_sent")
 	*/
-	public function showSentMessagesAction()
+	public function showSentMessagesAction(Request $request)
 	{
-		$repo = $this->getDoctrine()->getRepository('AppBundle:Message');
-		$sentMessages = $repo->findByFromUser($this->getUser());
+
+		$dql = "SELECT message FROM AppBundle:Message message WHERE message.fromUser=".$this->getUser()->getId();
+
+		$em = $this->getDoctrine()->getManager();
+		$query = $em->createQuery($dql);
+
+		$paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            5
+        );
 
 		return $this->render('mailbox/mailboxMessages.html.twig', [
-			'messages' => $sentMessages,
+			'messages' => $pagination,
 			]);
 	}
 
@@ -131,4 +150,12 @@ class MailboxController extends Controller
 			]);
 	}
 
+	/**
+	* @return mixed
+	*/
+	private function paginate()
+	{
+		return 'pagination';
+	}
 }
+

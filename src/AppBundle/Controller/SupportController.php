@@ -2,14 +2,14 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Message as Message;
-use AppBundle\Entity\User as User;
+use AppBundle\Entity\Support_Mail as Support_Mail;
+
+use AppBundle\Form\Support_MailType as Support_MailType;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
-use AppBundle\Form\MessageType as MessageType;
 
 
 
@@ -23,29 +23,41 @@ class SupportController extends Controller
 * @Route("/support/e-mail", name="support_e-mail")
 * 
 */
-public function contact_SendEmailAction()
+public function contact_SendEmailAction(Request $request)
 {
 
-   $to = 'frost8b@gmail.com';
-   $from = 'frostydev8@gmail.com';
-   $name = $this->getUser();
+    $mail = new Support_Mail();
 
-    $message = \Swift_Message::newInstance()
-        ->setSubject('Hello hello')
-        ->setFrom($from)
-        ->setTo($to)
-        ->setBody("
-                Witaj $name, dziękuję za rejestrację na blogu i zapraszam do dyskusji.<br>
-                Pozdrawiam,<br>
-                Marcin",
-                'text/html'
+    $form = $this->createForm(Support_MailType::class, $mail);        
+    $form->handleRequest($request);
 
-    );
-    $message->setCharset('UTF-8');
-    $this->get('mailer')->send($message);
+    if ($form->isSubmitted() && $form->isValid()) {
 
-    $this->addFlash('notice', 'Wysłano wiadomość!');
-    return $this->redirectToRoute('homepage');
+        $mail->setSendTo($this->getParameter('mailer_user'));
+        $mail->setSendFrom($this->getUser()->getEmail());
+        $mail->setMessageTopic($form->getData()->getMessageTopic());
+        $mail->setMessageBody($form->getData()->getMessageBody());
+    
+        $message = \Swift_Message::newInstance()
+                ->setSubject($mail->getMessageTopic())
+                ->setFrom($mail->getSendFrom())
+                ->setTo($mail->getSendTo())
+                ->setBody(
+                        'Wiadomość od: '.$this->getUser().' - '.$mail->getSendFrom().'
+                        <br>Wysłano: '.$mail->getDateSend()->format('Y-m-d H:i:s').'<br><br>'
+                        .$mail->getMessageBody(),
+                        'text/html'
+
+        );    
+       $message->setCharset('UTF-8');
+       $this->get('mailer')->send($message);
+       $this->addFlash('notice', 'Dziękujemy za wiadomość');      
+
+        return $this->redirect($request->getUri());   
+    }
+
+    return $this->render('support/send_mail.html.twig', [
+        'form' => $form->createView()]);
 
 }
 }

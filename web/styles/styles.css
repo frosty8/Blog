@@ -22,7 +22,7 @@ body{
 }
 .navTile:hover
 {
-    background-color: #DCC447;
+    background-color: #9EBAA1;
 }
 .link
 {
@@ -51,7 +51,7 @@ body{
 }
 .menu:hover > .menuItem:hover
 {
-    background-color: #EDD558;
+    background-color: #617C85;
 
 }
 .content
@@ -72,4 +72,8 @@ body{
 .myWrapper
 {
     padding: 0px 20px 20px 20px;
+}
+a
+{
+    color: #000000;
 }

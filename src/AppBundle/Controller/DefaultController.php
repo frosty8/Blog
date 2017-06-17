@@ -38,18 +38,21 @@ class DefaultController extends Controller
     /**
     * @Route("/post", name="post")
     */
-    public function showpostsAction(){
+    public function showpostsAction(Request $request){
 
-        $manager = $this->getDoctrine()->getManager();
-        $posts = $manager->createQueryBuilder()
-        ->from('AppBundle:Post', 'p')
-        ->select('p')
-        ->setMaxResults(20)
-        ->getQuery()
-        ->getResult();
-    
+        $em = $this->getDoctrine()->getManager();
+        $dql = "SELECT post FROM AppBundle:Post post";
+        $query = $em->createQuery($dql);
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
+   
         return $this->render('default/post.html.twig', [
-            'posts' => $posts
+            'posts' => $pagination
             ]);
     }
 

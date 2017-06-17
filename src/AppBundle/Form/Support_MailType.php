@@ -7,36 +7,31 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class CommentType extends AbstractType
+class Support_MailType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //Modyfikacja atrybutów formularza
         $builder
-        ->add('content', TextareaType::class, array (
-            'label' => false,
-             'attr' => array('placeholder' => 'Treść komentarza','rows' => 8)
-                )
-            )
-        ->add('Wyślij', SubmitType::class, array(
-            'attr' => array('class' => 'btn btn btn-success') 
-                )
-            )
+        ->add('messageTopic', TextType::class, [
+                'label'=> 'Temat'])
+        ->add('messageBody', TextareaType::class, ['label' => 'Treść wiadomości', 'attr' => ['rows' => 12]
+            ])
+        ->add('Wyślij', SubmitType::class)
         ;
     }
-    
     /**
      * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Comment'
+            'data_class' => 'AppBundle\Entity\Support_Mail'
         ));
     }
 
@@ -45,7 +40,7 @@ class CommentType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_comment';
+        return 'appbundle_support_mail';
     }
 
 
